@@ -10,8 +10,9 @@ from typing import Optional, Final, Dict
 from types import FrameType
 
 # standard libs
+import platform
 from signal import signal as register
-from signal import SIGUSR1, SIGUSR2, SIGINT, SIGTERM, SIGKILL
+
 
 # internal libs
 from hypershell.core.logging import Logger
@@ -20,6 +21,19 @@ from hypershell.core.logging import Logger
 __all__ = ['check_signal', 'RECEIVED', 'SIGNAL_MAP',
            'handler', 'register_handlers', 'register',
            'SIGUSR1', 'SIGUSR2', 'SIGINT', 'SIGTERM', 'SIGKILL']
+
+
+if platform.system() != 'Windows':
+    from signal import SIGUSR1, SIGUSR2, SIGINT, SIGTERM, SIGKILL
+else:
+    # NOTE:
+    # Windows does not provide the signal facility
+    # While valid, these stubs have no effect because on Windows we never signal
+    SIGUSR1: Final[int] = 30
+    SIGUSR2: Final[int] = 31
+    SIGINT: Final[int] = 2
+    SIGTERM: Final[int] = 15
+    SIGKILL: Final[int] = 9
 
 
 # initialize logger
@@ -44,7 +58,7 @@ SIGNAL_MAP: Final[Dict[int, str]] = {
 }
 
 
-def handler(signum: int, frame: Optional[FrameType]) -> None:
+def handler(signum: int, frame: Optional[FrameType]) -> None:  # noqa: unused frame
     """Generic handler assigns `signum` to global variable."""
     log.debug(f'Received signal {signum}: {SIGNAL_MAP.get(signum, "???")}')
     global RECEIVED
