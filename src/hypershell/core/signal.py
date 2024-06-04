@@ -65,7 +65,7 @@ def handler(signum: int, frame: Optional[FrameType]) -> None:  # noqa: unused fr
     RECEIVED = signum
 
 
-if platform.system() != 'Windows':
+if platform.system() == 'Windows':
 
     def register_handlers() -> None:
         """Empty function does nothing on Windows."""
