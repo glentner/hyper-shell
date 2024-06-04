@@ -65,7 +65,15 @@ def handler(signum: int, frame: Optional[FrameType]) -> None:  # noqa: unused fr
     RECEIVED = signum
 
 
-def register_handlers() -> None:
-    """Register signal handlers for client."""
-    register(SIGUSR1, handler)
-    register(SIGUSR2, handler)
+if platform.system() != 'Windows':
+
+    def register_handlers() -> None:
+        """Empty function does nothing on Windows."""
+        pass
+
+else:
+
+    def register_handlers() -> None:
+        """Register signal handlers for client."""
+        register(SIGUSR1, handler)
+        register(SIGUSR2, handler)
